@@ -1,4 +1,4 @@
-package com.cardealer.app;
+package com.cardealer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
