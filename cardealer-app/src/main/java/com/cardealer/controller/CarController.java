@@ -7,25 +7,29 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.Valid;
+
 @Controller
-public class InsertController {
+@RequestMapping(value={"/car"})
+public class CarController {
     @ApiOperation(value="Insert a new car", response = ResponseEntity.class)
     @ApiResponses(value = {
         @ApiResponse(code = 201, message = "Successfully saved the car"),
         @ApiResponse(code = 500, message = "Car not saved - internal server error occurred!") })
-    @RequestMapping(value={"/car/insert"}, method = RequestMethod.POST)
+    @RequestMapping(value={"/insert"}, method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity insert(CarDTO carDTO) {
-        if (carDTO != null && !carDTO.getMake().isEmpty() && !carDTO.getModel().isEmpty() && carDTO.getPrice() > 0 &&
-                carDTO.getYear() > 1750) {
-            // saving car
-            return new ResponseEntity(HttpStatus.CREATED);
+    public ResponseEntity insert(@Valid CarDTO carDTO, BindingResult result) {
+        if (result.hasErrors()) {
+            return new ResponseEntity((HttpStatus.INTERNAL_SERVER_ERROR));
         } else {
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            // saving car
+
+            return new ResponseEntity(HttpStatus.CREATED);
         }
     }
 }
