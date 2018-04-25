@@ -1,12 +1,19 @@
 package com.cardealer.dto;
 
-public class CarDTO {
-    private String make;
-    private String model;
-    private int year;
-    private double price;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 
-    public CarDTO(String make, String model, int year, double price) {
+public class CarDTO {
+    @NotBlank
+    private String make;
+    @NotBlank
+    private String model;
+    @Min(1700)
+    private Integer year;
+    @Min(0)
+    private Double price;
+
+    public CarDTO(String make, String model, Integer year, Double price) {
         this.make = make;
         this.model = model;
         this.year = year;
@@ -29,19 +36,19 @@ public class CarDTO {
         this.model = model;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 }
