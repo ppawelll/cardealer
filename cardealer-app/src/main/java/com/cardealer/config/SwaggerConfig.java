@@ -1,4 +1,4 @@
-package com.cardealer.app;
+package com.cardealer.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
