@@ -5,9 +5,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <junit.version>3.8.1</junit.version>
     <io.springfox.version>2.7.0</io.springfox.version>
-    <org.hibernate.version>5.2.16.Final</org.hibernate.version>
     <mysql.version>5.1.6</mysql.version>
-    <org.springframework.version>2.0.1.RELEASE</org.springframework.version>
   </properties>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.cardealer.app</groupId>
@@ -39,21 +37,14 @@
       <version>${io.springfox.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-      <version>${org.hibernate.version}</version>
-    </dependency>
-    <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>${mysql.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.springframework.data</groupId>
-      <artifactId>spring-data-jpa</artifactId>
-      <version>${org.springframework.version}</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
-
 
     <dependency>
       <groupId>junit</groupId>
