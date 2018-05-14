@@ -32,11 +32,14 @@ public class CarController {
     public ResponseEntity insert(@Valid CarDTO carDTO, BindingResult result) {
         if (result.hasErrors()) {
             return new ResponseEntity((HttpStatus.INTERNAL_SERVER_ERROR));
-        } else {
-            // saving car
-            carService.saveCar(carDTO);
+        }
 
+        // saving car
+        try {
+            carService.saveCar(carDTO);
             return new ResponseEntity(HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity((HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 }

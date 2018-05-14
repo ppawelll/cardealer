@@ -13,9 +13,6 @@ public class CarModel {
     private Integer year;
     private Double price;
 
-    public CarModel() {
-        super();
-    }
 
     public CarModel(String make, String model, Integer year, Double price) {
         this.make = make;
