@@ -21,6 +21,14 @@ public class CarModel {
         this.price = price;
     }
 
+    public CarModel() { // default constructor to avoid org.hibernate.HibernateException: HHH000142
+        super();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
     public String getMake() {
         return make;
     }

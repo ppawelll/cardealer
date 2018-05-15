@@ -10,9 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -38,6 +36,20 @@ public class CarController {
         try {
             carService.saveCar(carDTO);
             return new ResponseEntity(HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity((HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @ApiOperation(value="Update the car", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "Car updated successfully."),
+            @ApiResponse(code = 500, message = "Car not saved - internal server error occurred!") })
+    @PutMapping("/update/{id}")
+    public ResponseEntity update(@PathVariable("id") Long carID, @RequestBody CarDTO carDTO) {
+        try {
+            carService.update(carID, carDTO);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity((HttpStatus.INTERNAL_SERVER_ERROR));
         }
