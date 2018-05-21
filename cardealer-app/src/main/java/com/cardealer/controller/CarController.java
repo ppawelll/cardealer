@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import java.util.List;
 
 
 @Controller
@@ -21,6 +22,7 @@ import javax.validation.Valid;
 public class CarController {
     @Autowired
     private CarService carService;
+
 
     @ApiOperation(value="Insert a new car", response = ResponseEntity.class)
     @ApiResponses(value = {
@@ -57,5 +59,16 @@ public class CarController {
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+
+    @ApiOperation(value = "Find all cars", notes = "Retrieving the collection of cars", response = CarDTO[].class)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success", response = CarDTO[].class)
+    })
+    @RequestMapping(value="/list", method = RequestMethod.GET)
+    @ResponseBody
+    public List<CarDTO> findAll() {
+        return carService.findAll();
     }
 }

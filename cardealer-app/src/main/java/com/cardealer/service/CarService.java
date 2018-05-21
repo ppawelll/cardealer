@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class CarService {
@@ -42,5 +44,11 @@ public class CarService {
 
             carRepository.save(carModel);
         }
+    }
+
+    public List<CarDTO> findAll() {
+        return carRepository.findAll().stream()
+                .map(entity -> new CarDTO(entity.getMake(), entity.getModel(), entity.getYear(), entity.getPrice()))
+                .collect(Collectors.toList());
     }
 }
