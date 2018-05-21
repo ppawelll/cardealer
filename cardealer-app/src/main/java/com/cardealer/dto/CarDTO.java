@@ -13,6 +13,8 @@ public class CarDTO {
     @Min(0)
     private Double price;
 
+    public CarDTO() {}
+
     public CarDTO(String make, String model, Integer year, Double price) {
         this.make = make;
         this.model = model;

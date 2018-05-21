@@ -1,7 +1,12 @@
 package com.cardealer.controller;
 
 
+import com.cardealer.dto.CarDTO;
 import com.cardealer.service.CarService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,12 +48,11 @@ public class CarControllerTest {
 
     @Test
     public void testSuccessInsertCar() throws Exception {
+        CarDTO carDTO = new CarDTO("opel", "vectra", 2003, 10000.0);
+
         mockMvc.perform(post("/car/insert")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("make", "opel")
-                .param("model", "vectra")
-                .param("year", "2003")
-                .param("price", "10000")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(carDtoToJson(carDTO))
         )
                 .andExpect(MockMvcResultMatchers.status()
                         .isCreated());
@@ -56,17 +60,24 @@ public class CarControllerTest {
 
     @Test
     public void testFailInsertCar() throws Exception {
+        CarDTO carDTO = new CarDTO("", "vectra", 2003, 15000.0);
 
 
         mockMvc.perform(post("/car/insert")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("make", "") //make mustn’t be empty
-                .param("model", "vectra")
-                .param("year", "2003")
-                .param("price", "15000")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(carDtoToJson(carDTO))
         )
                 .andExpect(MockMvcResultMatchers.status()
                         .is(500));
+    }
+
+    private String carDtoToJson(CarDTO dto) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+
+        return ow.writeValueAsString(dto);
+
     }
 }
 
