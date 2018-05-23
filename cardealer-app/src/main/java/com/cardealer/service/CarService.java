@@ -17,10 +17,11 @@ public class CarService {
     @Autowired
     private CarRepository carRepository;
 
-    public void saveCar(CarDTO carDTO) {
+    public CarDTO saveCar(CarDTO carDTO) {
 
         CarModel carModel = new CarModel(carDTO.getMake(), carDTO.getModel(), carDTO.getYear(), carDTO.getPrice());
-        carRepository.save(carModel);
+        CarModel savedModel = carRepository.save(carModel);
+        return new CarDTO(savedModel.getMake(), savedModel.getModel(), savedModel.getYear(), savedModel.getPrice(), savedModel.getId());
     }
 
     @Transactional

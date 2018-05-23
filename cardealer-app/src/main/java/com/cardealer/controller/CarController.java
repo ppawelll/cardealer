@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
-import java.util.List;
 
 
 @Controller
@@ -26,7 +25,7 @@ public class CarController {
 
     @ApiOperation(value="Insert a new car", response = ResponseEntity.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 201, message = "Successfully saved the car"),
+        @ApiResponse(code = 201, message = "Successfully saved the car", response = CarDTO.class),
         @ApiResponse(code = 500, message = "Car not saved - internal server error occurred!") })
     @RequestMapping(value={"/insert"}, method = RequestMethod.POST)
     @ResponseBody
@@ -37,8 +36,8 @@ public class CarController {
 
         // saving car
         try {
-            carService.saveCar(carDTO);
-            return new ResponseEntity(HttpStatus.CREATED);
+            CarDTO savedCar = carService.saveCar(carDTO);
+            return new ResponseEntity(savedCar, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity((HttpStatus.INTERNAL_SERVER_ERROR));
         }
@@ -61,14 +60,13 @@ public class CarController {
         }
     }
 
-
     @ApiOperation(value = "Find all cars", notes = "Retrieving the collection of cars", response = CarDTO[].class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "Success", response = CarDTO[].class)
     })
     @RequestMapping(value="/list", method = RequestMethod.GET)
     @ResponseBody
-    public List<CarDTO> findAll() {
-        return carService.findAll();
+    public ResponseEntity<CarDTO[]> findAll() {
+        return new ResponseEntity(carService.findAll(), HttpStatus.OK);
     }
 }
