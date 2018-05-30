@@ -18,11 +18,19 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.persistence.EntityNotFoundException;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 @ContextConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -69,6 +77,58 @@ public class CarControllerTest {
         )
                 .andExpect(MockMvcResultMatchers.status()
                         .is(500));
+    }
+
+    @Test
+    public void testSuccessFindAll() throws Exception {
+        CarDTO car1 = new CarDTO("mazda", "3", 2016, 65000.0);
+        CarDTO car2 = new CarDTO("mazda", "6", 2016, 75000.0);
+
+        when(carService.findAll()).thenReturn(Arrays.asList(car1,car2));
+
+        ResultActions result = mockMvc.perform(get("/car/list"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+        String content = result.andReturn().getResponse().getContentAsString();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+
+        assertEquals(ow.writeValueAsString(Arrays.asList(car1,car2)).replaceAll("\\s",""),
+                content.replaceAll("\\s",""));
+
+        verify(carService, times(1)).findAll();
+        verifyNoMoreInteractions(carService);
+
+    }
+
+    @Test
+    public void testSuccessUpdate() throws Exception {
+        CarDTO car1 = new CarDTO("mazda", "3", 2016, 65000.0);
+        mockMvc.perform(put("/car/update/1")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(carDtoToJson(car1))
+                )
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        verify(carService, times(1)).update();
+        verifyNoMoreInteractions(carService);
+    }
+
+    @Test
+    public void testFailUpdate() throws Exception {
+        CarDTO car1 = new CarDTO("mazda", "3", 2016, 65000.0);
+
+        doThrow(new EntityNotFoundException()).when(carService).update(anyLong(),any());
+
+        mockMvc.perform(put("/car/update/{id}",11111111L)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(carDtoToJson(car1)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+        verify(carService, times(1)).update();
+        verifyNoMoreInteractions(carService);
+
     }
 
     private String carDtoToJson(CarDTO dto) throws JsonProcessingException {
